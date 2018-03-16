@@ -2,7 +2,7 @@ module CounterWithFunction
 #(
 	// Parameter Declarations
 	parameter ZERO = 0,
-	parameter MAXIMUM_VALUE = 16,
+	parameter MAXIMUM_VALUE = 17,
 	parameter NBITS_FOR_COUNTER = CeilLog2(MAXIMUM_VALUE)
 )
 (

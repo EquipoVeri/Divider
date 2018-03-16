@@ -1,5 +1,5 @@
 timeunit 10ps; //It specifies the time unit that all the delay will take in the simulation.
-timeprecision 10ps;// It specifies the resolution in the simulation.
+timeprecision 1ps;// It specifies the resolution in the simulation.
 
 module Divider_TB;
 
@@ -10,8 +10,8 @@ bit reset;
 
 logic [WORD_LENGTH-1:0] dividend = 0;
 logic [WORD_LENGTH-1:0] divisor = 0;
-logic [WORD_LENGTH-1:0] result;
-logic [WORD_LENGTH-1:0] remainder;
+wire [WORD_LENGTH-1:0] result;
+wire [WORD_LENGTH-1:0] remainder;
 
 
 Divider
@@ -46,8 +46,8 @@ end
 /*********************************************************/
 
 initial begin 
-	#0 dividend = 120;
-	#0 divisor = 6;
+	#0 dividend = 246;
+	#0 divisor = 89;
 end
 
 /*********************************************************/
