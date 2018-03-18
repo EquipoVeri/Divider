@@ -12,6 +12,7 @@ logic [WORD_LENGTH-1:0] dividend = 0;
 logic [WORD_LENGTH-1:0] divisor = 0;
 wire [WORD_LENGTH-1:0] result;
 wire [WORD_LENGTH-1:0] remainder;
+wire sign;
 
 
 Divider
@@ -27,7 +28,8 @@ DUV
 	.divisor(divisor),
 	// Output
 	.result(result),
-	.remainder(remainder)
+	.remainder(remainder),
+	.sign(sign)
 );
 
 
@@ -46,8 +48,8 @@ end
 /*********************************************************/
 
 initial begin 
-	#0 dividend = 246;
-	#0 divisor = 89;
+	#0 dividend = -246;
+	#0 divisor = -80;
 end
 
 /*********************************************************/

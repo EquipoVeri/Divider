@@ -12,11 +12,8 @@ module Divider
 	
 	// Output Ports
 	output [WORD_LENGTH-1:0] result,
-	output [WORD_LENGTH-1:0] remainder
-
-//	output ready,
-	
-//	output sign
+	output [WORD_LENGTH-1:0] remainder,
+	output sign
 );
 
 wire flag0_w;
@@ -25,6 +22,10 @@ wire [(WORD_LENGTH*2)-1:0] Rem_w;
 wire [(WORD_LENGTH*2)-1:0] Div_w;
 wire [(WORD_LENGTH*2)-1:0] DivReg_w;
 wire [WORD_LENGTH-1:0] Q_w;
+wire [WORD_LENGTH-1:0] signed_divisor_w;
+wire [WORD_LENGTH-1:0] signed_dividend_w;
+bit sign_divisor_bit;
+bit sign_dividend_bit;
 wire [WORD_LENGTH-1:0] Qshift_w;
 wire [WORD_LENGTH-1:0] Qreg_w;
 wire [(WORD_LENGTH*2)-1:0] RemAdder_w;
@@ -44,6 +45,40 @@ CounterWithFunction counter
 	.enable(1'b1),
 	.flag0(flag0_w),
 	.flag32(enable_w) 
+);
+
+
+TwoComplement
+#(
+	.WORD_LENGTH(WORD_LENGTH)
+)
+twocomplement_divisor
+(
+	.signed_input(divisor),
+	.unsigned_output(signed_divisor_w),
+	.sign(sign_divisor_bit)
+);
+
+
+TwoComplement
+#(
+	.WORD_LENGTH(WORD_LENGTH)
+)
+twocomplement_dividend
+(
+	.signed_input(dividend),
+	.unsigned_output(signed_dividend_w),
+	.sign(sign_dividend_bit)
+);
+
+
+
+Sign sign_divider
+(
+	.enable(1'b1),
+	.multiplicand(sign_dividend_bit),
+	.multiplier(sign_divisor_bit),
+	.sign(sign)
 );
 
 
@@ -68,7 +103,7 @@ MuxRemainder_init
 (
 	.Selector(flag0_w),
 	.MUX_Data0(RemReg_w),
-	.MUX_Data1({16'b0, dividend}),
+	.MUX_Data1({16'b0, signed_dividend_w}),
 	.MUX_Output(Rem_w)
 );
 
@@ -81,7 +116,7 @@ MuxDivisior_init
 (
 	.Selector(flag0_w),
 	.MUX_Data0(DivReg_w),
-	.MUX_Data1({divisor, 16'b0}),
+	.MUX_Data1({signed_divisor_w, 16'b0}),
 	.MUX_Output(Div_w)
 );
 
@@ -165,7 +200,7 @@ reg_Q
 
 Register
 #(
-	.Word_Length(WORD_LENGTH*2)
+	.Word_Length(WORD_LENGTH)
 )
 reg_finalRem
 (
@@ -173,7 +208,7 @@ reg_finalRem
 	.clk(clk),
 	.reset(reset),
 	.enable(enable_w),
-	.Data_Input(RestoredRem_w),
+	.Data_Input(RestoredRem_w[WORD_LENGTH-1:0]),
 	.Data_Output(remainder_w)
 );
 
